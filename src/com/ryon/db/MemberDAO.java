@@ -150,6 +150,49 @@ public class MemberDAO {
 		}
 		return dto;
 	}
+
+	// 데이터 보기(id 검색)
+	public static int select(String pid) {
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		
+		int ret = 0;   // 중복 아님
+		
+		try {
+			Class.forName("com.mysql.jdbc.Driver");
+			String url = "jdbc:mysql://localhost/dbdb?serverTimezone=Asia/Seoul";
+			conn = DriverManager.getConnection(url, "root", "root");
+			
+			String sql = "SELECT * FROM member WHERE id = ?";
+			stmt = conn.prepareStatement(sql);
+			stmt.setString(1, pid);
+			rs = stmt.executeQuery();
+
+			if (rs.next()) {
+				ret = 1;
+			}
+		} catch (ClassNotFoundException e) {
+			System.out.println("드라이버 로딩 실패");
+		} catch (SQLException e) {
+			System.out.println("에러 " + e);
+		} finally {
+			try {
+				if (conn != null && !conn.isClosed()) {
+					conn.close();
+				}
+				if (stmt != null && !stmt.isClosed()) {
+					stmt.close();
+				}
+				if (rs != null && !rs.isClosed()) {
+					rs.close();
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return ret;
+	}
 	
 
 

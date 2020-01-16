@@ -6,6 +6,39 @@
     <meta charset="utf-8">
     <title>Ryan Login</title>
     <link rel="stylesheet" href="style.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script>
+// 아이디 유효성 검사(1 = 중복 / 0 != 중복)
+$(document).ready(function(){
+	$("#user_id").blur(function() {
+		// id = "id_reg" / name = "userId"
+		var user_id = $('#user_id').val();
+		$.ajax({
+			url : 'idCheck?userId='+ user_id,
+			type : 'get',
+			success : function(data) {
+				console.log("1 = 중복o / 0 = 중복x : "+ data);							
+				
+				if (data == 1) {
+						// 1 : 아이디가 중복되는 문구
+						$("#id_check").text("사용중인 아이디입니다 :p");
+						$("#id_check").css("color", "red");
+						$("#reg_submit").attr("disabled", true);
+				} else {
+						
+						// 1 : 아이디가 중복되는 문구
+						$("#id_check").text("사용 가능 한 아이디입니다 :p");
+						$("#id_check").css("color", "green");
+						$("#reg_submit").attr("disabled", true);
+						
+					}
+				}, error : function() {
+						console.log("실패");
+				}
+			});
+		});
+});
+</script>
 </head>
 <body>
     <form action="mb_ok" method="post">
@@ -31,7 +64,8 @@
             </g>
             <path d="M40,105 C10,140 110,140 80,105 L80,105 L70,111 L60,105 L50,111 L40,105" fill="#fff" />
         </svg>
-        <input type="text" name="uid" placeholder="아이디를 입력">
+        <input type="text" name="uid" id="user_id" placeholder="아이디를 입력">
+        <div class="check_font" id="id_check"></div>
         <input type="password" name="pw" placeholder="패스워드 입력">
         <input type="text" name="name" placeholder="이름 입력">
         <input type="email" name="email" placeholder="email@domain.com">
