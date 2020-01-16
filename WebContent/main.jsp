@@ -33,6 +33,14 @@
 <%=name %>님 반갑습니다.<br>
 로그인 되었습니다.<br>
 로그아웃은???<br>
-<a href="logout.jsp">로그아웃</a>
+<a href="logout.jsp">로그아웃</a><br>
+
+<% for (MemberDTO m : mList) { %>
+	<%=m.getId() %>
+	<%=m.getPw() %>
+	<%=m.getName() %>
+	<%=m.getEmail() %>
+	<%=m.getPhone() %><br>
+<% } %>
 </body>
 </html>
