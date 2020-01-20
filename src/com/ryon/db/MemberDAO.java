@@ -10,6 +10,97 @@ import java.util.ArrayList;
 import com.ryon.dto.MemberDTO;
 
 public class MemberDAO {
+	// 전체 갯수 SELECT COUNT(*) FROM member
+	public static int getCount() {
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		int cnt = 0;  // 갯수 반환
+		try {
+			Class.forName("com.mysql.jdbc.Driver");
+			String url = "jdbc:mysql://localhost/dbdb?serverTimezone=Asia/Seoul";
+			conn = DriverManager.getConnection(url, "root", "root");
+			String sql = "SELECT COUNT(*) FROM member";
+			stmt = conn.prepareStatement(sql);
+			rs = stmt.executeQuery();
+			if (rs.next()) {
+				cnt = rs.getInt(1);
+			}
+		} catch (ClassNotFoundException e) {
+			System.out.println("드라이버 로딩 실패");
+		} catch (SQLException e) {
+			System.out.println("에러 " + e);
+		} finally {
+			try {
+				if (conn != null && !conn.isClosed()) {
+					conn.close();
+				}
+				if (stmt != null && !stmt.isClosed()) {
+					stmt.close();
+				}
+				if (rs != null && !rs.isClosed()) {
+					rs.close();
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return cnt;
+	}
+	// 페이징 SELECT * FROM member LIMIT 0, 10
+ 	public static ArrayList<MemberDTO> select(int start, int exid) {
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		ArrayList<MemberDTO> list = new ArrayList<>();
+		try {
+			Class.forName("com.mysql.jdbc.Driver");
+			String url = "jdbc:mysql://localhost/dbdb?serverTimezone=Asia/Seoul";
+			conn = DriverManager.getConnection(url, "root", "root");
+			String sql = "SELECT * FROM member LIMIT ?, ?";
+			stmt = conn.prepareStatement(sql);
+			stmt.setInt(1, start);
+			stmt.setInt(2, exid);
+			rs = stmt.executeQuery();
+			while (rs.next()) {
+				String id = rs.getString("id");
+				String pw = rs.getString("pw");
+				String name = rs.getString("name");
+				String email = rs.getString("email");
+				String phone = rs.getString("phone");
+				
+				MemberDTO dto = new MemberDTO();
+				dto.setId(id);
+				dto.setPw(pw);
+				dto.setName(name);
+				dto.setEmail(email);
+				dto.setPhone(phone);
+				
+				list.add(dto);
+
+				System.out.println(id + " " + pw + " " + name + " " + email + " " + phone);
+			}
+		} catch (ClassNotFoundException e) {
+			System.out.println("드라이버 로딩 실패");
+		} catch (SQLException e) {
+			System.out.println("에러 " + e);
+		} finally {
+			try {
+				if (conn != null && !conn.isClosed()) {
+					conn.close();
+				}
+				if (stmt != null && !stmt.isClosed()) {
+					stmt.close();
+				}
+				if (rs != null && !rs.isClosed()) {
+					rs.close();
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return list;
+	}	
 	// 데이터 리스트로 가지고 오는 기능
  	public static ArrayList<MemberDTO> select() {
 		Connection conn = null;
